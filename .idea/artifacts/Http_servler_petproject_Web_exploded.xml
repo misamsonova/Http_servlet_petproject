@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Http-servler-petproject:Web exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/Http_servler_petproject_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="Http-servler-petproject/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Http-servlet-petproject" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="jakarta.servlet.jsp.jstl-3.0.0" />
+          <element id="library" level="project" name="jakarta.servlet.jsp.jstl-api-3.0.0" />
+          <element id="library" level="project" name="lombok-1.18.26" />
+          <element id="library" level="project" name="servlet-api" />
+          <element id="library" level="project" name="postgresql-42.7.3" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

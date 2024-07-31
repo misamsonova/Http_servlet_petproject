@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="servlets-project">
+    <output-path>$PROJECT_DIR$/out/artifacts/servlets_project</output-path>
+    <root id="archive" name="servlets-project.war">
+      <element id="artifact" artifact-name="Http-servler-petproject:Web exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="jakarta.servlet.jsp.jstl-api-3.0.0" />
+          <element id="library" level="project" name="lombok-1.18.26" />
+          <element id="library" level="project" name="postgresql-42.7.3" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
