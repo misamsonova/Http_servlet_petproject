@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
-
 public class OrderDao implements Dao<Long, Order>{
 
     public static final String FIND_BY_ID = """
@@ -18,6 +17,11 @@ public class OrderDao implements Dao<Long, Order>{
             WHERE id = ?
         """;
 
+    public static final String FIND_BY_PASSPORT = """
+            SELECT *
+            FROM orders
+            WHERE passport_client = ?
+        """;
     public static final String SAVE_SQL="INSERT INTO orders(first_name_client, last_name_client, patronymic_client, passport_client, car_model, car_number, price, time_order, start_rent, finish_rent) VALUES (?,?,?,?,?,?,?,?,?,?)";
     private static final OrderDao INSTANCE = new OrderDao();
 
@@ -37,6 +41,20 @@ public class OrderDao implements Dao<Long, Order>{
         }
     }
 
+    @SneakyThrows
+    public Optional<Order> findByPassport(Long passport) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_BY_PASSPORT)) {
+            preparedStatement.setObject(1,passport);
+            var resultSet = preparedStatement.executeQuery();
+            Optional<Order> order = null;
+            if(resultSet.next()){
+                order = buildOrder(resultSet);
+            }
+            return order;
+        }
+    }
+
     private Optional<Order> buildOrder(ResultSet resultSet) throws SQLException {
         return Optional.of(new Order(
                 resultSet.getObject("id", Long.class),
@@ -48,8 +66,8 @@ public class OrderDao implements Dao<Long, Order>{
                 resultSet.getObject("car_number", String.class),
                 resultSet.getObject("price", Long.class),
                 resultSet.getObject("time_order", Timestamp.class).toLocalDateTime(),
-                resultSet.getObject("start_rent", Date.class).toLocalDate(),
-                resultSet.getObject("finish_rent", Date.class).toLocalDate()
+                resultSet.getObject("start_rent", Timestamp.class).toLocalDateTime().toLocalDate(),
+                resultSet.getObject("finish_rent", Timestamp.class).toLocalDateTime().toLocalDate()
         ));
     }
 

@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024)
 @WebServlet("/create_order")
@@ -36,18 +35,8 @@ public class CreateOrderServlet extends HttpServlet {
         req.setAttribute("passport", user.getPassport());
         req.setAttribute("models", modelService.findAll());
 
-        var m = req.getAttribute("models");
-//        resp.
-        System.out.println(m);
-//        System.out.println(carService.findFirstByModel(m).get().getNumber());
-//        req.setAttribute("Model: ", );
-//        req.setAttribute("Car number: ");
-//        req.setAttribute("Price");
-
         req.getRequestDispatcher(JspHelper.getPath("createOrder"))
                 .forward(req,resp);
-
-
     }
 
     @Override
@@ -56,12 +45,9 @@ public class CreateOrderServlet extends HttpServlet {
         System.out.println("last_name: " + req.getParameter("last_name"));
         System.out.println("patronymic: " + req.getParameter("patronymic"));
         System.out.println("passport: " + req.getParameter("passport"));
-        System.out.println("model: " + req.getParameter("model"));
-        var m = req.getParameter("model");
-        System.out.println("1:" + m);
+        System.out.println("model: " + req.getParameter("model").trim());
+        System.out.println("number: " + carService.findFirstByModel(req.getParameter("model")));
 
-        var car = carService.findFirstByModel(m);
-        System.out.println("car: " + car);
 
         LocalDateTime now = LocalDateTime.now();
         var orderDto = CreateOrderDto.builder()
@@ -69,9 +55,8 @@ public class CreateOrderServlet extends HttpServlet {
                 .last_name(req.getParameter("last_name"))
                 .patronymic(req.getParameter("patronymic"))
                 .passport(req.getParameter("passport"))
-                .model(req.getParameter("model"))
-                .number("E102TY")
-//                .number(carService.findFirstByModel(req.getParameter("model")).get().getNumber())
+                .model(req.getParameter("model").trim())
+                .number(carService.findFirstByModel(req.getParameter("model")))
                 //
                 .price("100000")
                 //

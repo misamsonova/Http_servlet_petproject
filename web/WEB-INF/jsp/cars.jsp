@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>Cars</title>
@@ -85,7 +85,7 @@
 <h2>Количество свободных автомобилей:</h2>
 <div><p>${requestScope.cars}</p></div>
 <a href="${pageContext.request.contextPath}/create_order">
-    <button type="button"><fmt:message key="page.cars.order.button"/>Rent</button>
+    <button type="button"><fmt:message key="page.cars.order.button"/></button>
 </a>
 </body>
 </html>

@@ -18,17 +18,16 @@ import java.util.Optional;
 public class CarDao implements Dao<Long, Car>{
     public static final CarDao INSTANCE = new CarDao();
 
-    public static final String FIND_ALL_BY_MODEL= """
-            SELECT *
-            FROM car
-            WHERE model = ? AND status = 'READY'
-            """;
-
     public static final String FIND_FIRST_BY_MODEL= """
             SELECT *
             FROM car
             WHERE model = ? AND status = 'READY'
-            LIMIT 1
+            LIMIT 1;
+            """;
+    public static final String FIND_ALL_BY_MODEL= """
+            SELECT *
+            FROM car
+            WHERE model = ? AND status = 'READY';
             """;
 
     public static CarDao getInstance(){
@@ -37,6 +36,7 @@ public class CarDao implements Dao<Long, Car>{
 
     @SneakyThrows
     public List<Car> findAllByModel(String model) {
+        model = model.trim();
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_BY_MODEL)) {
             preparedStatement.setObject(1,model);
@@ -45,15 +45,26 @@ public class CarDao implements Dao<Long, Car>{
             while(resultSet.next()){
                 cars.add(buildCar(resultSet));
             }
-
             return cars;
         }
     }
 
+    @SneakyThrows
+    public Car findFirstByModel(String model) {
+        model = model.trim();
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_FIRST_BY_MODEL)) {
+            preparedStatement.setObject(1,model);
+            var resultSet = preparedStatement.executeQuery();
+            Car car = null;
+            if(resultSet.next()){
+                car = buildCar(resultSet);
+            }
+            return car;
+        }
+    }
+
     private Car buildCar(ResultSet resultSet) throws SQLException {
-        System.out.println(resultSet.getObject("id", Long.class));
-        System.out.println(resultSet.getObject("number", String.class));
-        System.out.println(resultSet.getObject("status", String.class));
         return new Car(
                 resultSet.getObject("id", Long.class),
                 resultSet.getObject("number", String.class),
@@ -62,19 +73,6 @@ public class CarDao implements Dao<Long, Car>{
                         .build(),
                 CarStatus.valueOf(resultSet.getObject("status", String.class))
         );
-    }
-
-    @SneakyThrows
-    public Car findFirstByModel(String model) {
-        try (var connection = ConnectionManager.get();
-             var preparedStatement = connection.prepareStatement(FIND_FIRST_BY_MODEL)) {
-            preparedStatement.setObject(2,model);
-            var resultSet = preparedStatement.executeQuery();
-            Car car = new Car();
-            resultSet.next();
-            car = buildCar(resultSet);
-            return car;
-        }
     }
 
     @Override
